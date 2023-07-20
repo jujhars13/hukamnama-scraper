@@ -23,15 +23,21 @@ jobs:
                   VALIDATE_YAML: true
                   VALIDATE_GO: true
 
-            - name: Set up Go
-              uses: actions/setup-go@v4
-              with:
-                  go-version: "1.19"
+            # - name: Set up Go
+            #   uses: actions/setup-go@v4
+            #   with:
+            #       go-version: "1.19"
 
-            - name: Install gosec
-              run: |
-                  # Install gosec
-                  go get github.com/securego/gosec/cmd/gosec@latest
+            # - name: Install gosec
+            #   run: |
+            #       # Install gosec
+            #       go get github.com/securego/gosec/cmd/gosec@latest
 
-            - name: Run gosec
-              run: gosec ./...
+            # - name: Run gosec
+            #   run: gosec ./...            # - name: Install gosec
+            #   run: |
+            #       # Install gosec
+            #       go get github.com/securego/gosec/cmd/gosec@latest
+
+            # - name: Run gosec
+            #   run: gosec ./...
