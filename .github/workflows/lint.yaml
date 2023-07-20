@@ -12,15 +12,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-     - name: Lint
-        uses: github/super-linter@v5
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BRANCH: main
-          VALIDATE_ALL_CODEBASE: true
-          VALIDATE_BASH: true
-          VALIDATE_YAML: true
-          VALIDATE_GO: true
+      - name: Lint
+          uses: github/super-linter@v5
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            DEFAULT_BRANCH: main
+            VALIDATE_ALL_CODEBASE: true
+            VALIDATE_BASH: true
+            VALIDATE_YAML: true
+            VALIDATE_GO: true
 
       - name: Set up Go
         uses: actions/setup-go@v4
