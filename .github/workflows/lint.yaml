@@ -1,23 +1,19 @@
-name: CI
+name: linting
 
 on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
-  build:
+  linting:
     runs-on: ubuntu-latest
+    permissions:
+          contents: read
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.19"
 
      - name: Lint
         uses: github/super-linter@v5
@@ -28,6 +24,11 @@ jobs:
           VALIDATE_BASH: true
           VALIDATE_YAML: true
           VALIDATE_GO: true
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.19"
 
       - name: Install gosec
         run: |
