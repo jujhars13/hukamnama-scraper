@@ -42,7 +42,7 @@ func TestHukamnama(t *testing.T) {
 			t.Fatalf("Hukamnama date is wrong, wants %s got %s,", hukam.dateTime, wants.dateTime)
 		}
 		if hukam.gurmukhi != wants.gurmukhi {
-			t.Fatalf("Hukamnama gurmukhi is wrong, wants %s got %s,", hukam.gurmukhi, wants.gurmukhi)
+			t.Fatalf("Hukamnama Gurmukhi is wrong, wants %s got %s,", hukam.gurmukhi, wants.gurmukhi)
 		}
 	}
 }

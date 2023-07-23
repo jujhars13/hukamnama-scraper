@@ -2,6 +2,7 @@ package scrape
 
 import (
 	"fmt"
+	"log"
 
 	// importing Colly
 	"github.com/gocolly/colly"
@@ -26,6 +27,11 @@ func GetTodaysHukamnama(url string) hukam {
 		links := e.ChildAttrs("a", "href")
 		fmt.Println(links)
 	})
+
+	c.OnError(func(_ *colly.Response, err error) {
+		log.Fatalf("Something went wrong getting response:", err)
+	})
+
 	c.Visit(url)
 
 	return result
