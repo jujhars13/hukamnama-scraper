@@ -3,6 +3,8 @@ package scrape
 import (
 	"fmt"
 	"log"
+	"strconv"
+	"strings"
 	"time"
 
 	// importing Colly
@@ -30,26 +32,39 @@ func GetTodaysHukamnama(url string) hukam {
 		fmt.Println("Got a response from", r.Request.URL)
 	})
 
-	c.OnError(func(_ *colly.Response, err error) {
-		log.Fatalln("Something went wrong getting response", err)
+	c.OnError(func(r *colly.Response, err error) {
+		fmt.Println("Request URL:", r.Request.URL, "failed with response:", r, "\nError:", err)
 	})
 
 	result := hukam{}
+	result.dateTime = "2023-07-23 04:35:00"
 
-	// Find and print all links
-	c.OnHTML("", func(e *colly.HTMLElement) {
-		links := e.ChildAttrs("a", "href")
-		fmt.Println(links)
-		e.Request.Visit(e.Attr("href"))
+	c.OnHTML("body > table:nth-child(3) > tbody > tr:nth-child(1) > td:nth-child(6) > blockquote > center:nth-child(4) > table > tbody > tr:nth-child(3) > td > p > font > strong > font:nth-child(2) > strong > font > font", func(e *colly.HTMLElement) {
+		result.gurmukhi = strings.TrimSpace(e.Text)
+	})
+	c.OnHTML("body > table:nth-child(3) > tbody > tr:nth-child(1) > td:nth-child(6) > blockquote > div > table:nth-child(1) > tbody > tr > td:nth-child(2) > font", func(e *colly.HTMLElement) {
+		// ang raw string looks like this `(AMg: 696)`, do a bunch of parsing and stripping
+		rawAng := strings.TrimRight(strings.Split(strings.TrimSpace(e.Text), ": ")[1], ")")
+		ang, err := strconv.Atoi(rawAng)
+		if err != nil {
+			log.Fatalln("Couldn't get ang number", err)
+			result.ang = 0
+		}
+		result.ang = ang
+	})
 
-		result.ang = 597
-		result.gurmukhi = "ਮੇਰੈ ਹੀਅਰੈ ਰਤਨੁ ਨਾਮੁ ਹਰਿ ਬਸਿਆ ਗੁਰਿ ਹਾਥੁ ਧਰਿਓ ਮੇਰੈ ਮਾਥਾ ॥ ਜਨਮ ਜਨਮ ਕੇ ਕਿਲਬਿਖ ਦੁਖ ਉਤਰੇ ਗੁਰਿ ਨਾਮੁ ਦੀਓ ਰਿਨੁ ਲਾਥਾ ॥੧॥ ਮੇਰੇ ਮਨ ਭਜੁ ਰਾਮ ਨਾਮੁ ਸਭਿ ਅਰਥਾ ॥ ਗੁਰਿ ਪੂਰੈ ਹਰਿ ਨਾਮੁ ਦ੍ਰਿੜਾਇਆ ਬਿਨੁ ਨਾਵੈ ਜੀਵਨੁ ਬਿਰਥਾ ॥ ਰਹਾਉ ॥ ਬਿਨੁ ਗੁਰ ਮੂੜ ਭਏ ਹੈ ਮਨਮੁਖ ਤੇ ਮੋਹ ਮਾਇਆ ਨਿਤ ਫਾਥਾ ॥ ਤਿਨ ਸਾਧੂ ਚਰਣ ਨ ਸੇਵੇ ਕਬਹੂ ਤਿਨ ਸਭੁ ਜਨਮੁ ਅਕਾਥਾ ॥੨॥ ਜਿਨ ਸਾਧੂ ਚਰਣ ਸਾਧ ਪਗ ਸੇਵੇ ਤਿਨ ਸਫਲਿਓ ਜਨਮੁ ਸਨਾਥਾ ॥ ਮੋ ਕਉ ਕੀਜੈ ਦਾਸੁ ਦਾਸ ਦਾਸਨ ਕੋ ਹਰਿ ਦਇਆ ਧਾਰਿ ਜਗੰਨਾਥਾ ॥੩॥ ਹਮ ਅੰਧੁਲੇ ਗਿਆਨਹੀਨ ਅਗਿਆਨੀ ਕਿਉ ਚਾਲਹ ਮਾਰਗਿ ਪੰਥਾ ॥ ਹਮ ਅੰਧੁਲੇ ਕਉ ਗੁਰ ਅੰਚਲੁ ਦੀਜੈ ਜਨ ਨਾਨਕ ਚਲਹ ਮਿਲੰਥਾ ॥੪॥੧॥"
-		result.dateTime = "2023-07-23 04:35:00"
+	c.OnHTML("body > table:nth-child(3) > tbody > tr:nth-child(1) > td:nth-child(6) > blockquote > center:nth-child(3) > table > tbody > tr:nth-child(3) > td > div > font > b > font > font > font", func(e *colly.HTMLElement) {
+		fmt.Println("date is %i", e.Text)
+
+		//result.dateTime = e.Text
 	})
 
 	c.Visit(url)
 
-	c.Wait()
+	// Display collector's statistics
+	log.Println(c)
+
+	//c.Wait()
 
 	return result
 

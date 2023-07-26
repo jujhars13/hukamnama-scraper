@@ -35,14 +35,14 @@ var testData = []testCase{
 }
 
 // Ensure that a webserver is running on 8081 with some test files
-// this is more of an integration test than a unit test, but not gonna be katar about it
+// this is more of an integration test than a unit test, but not gonna be strict about it as my skills are not there
 // docker run -it -p 8081:80 -v ${PWD}:/usr/share/nginx/html nginx
 func TestHukamnama(t *testing.T) {
 
 	for _, wants := range testData {
 		hukam := GetTodaysHukamnama(fmt.Sprintf("http://localhost:8081/%s", wants.filename))
 
-		fmt.Println(hukam)
+		//fmt.Println(hukam)
 		if hukam.dateTime != wants.dateTime {
 			t.Fatalf("Hukamnama date is wrong, wants %s got %s,", hukam.dateTime, wants.dateTime)
 		}
