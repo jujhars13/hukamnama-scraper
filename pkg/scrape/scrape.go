@@ -20,7 +20,7 @@ type hukam struct {
 func GetTodaysHukamnama(url string) hukam {
 
 	c := colly.NewCollector(
-		colly.Async(true), colly.AllowedDomains("old.sgpc.net", "localhost"),
+	//colly.Async(true), colly.AllowedDomains("old.sgpc.net", "localhost"),
 	)
 
 	c.SetRequestTimeout(120 * time.Second)
@@ -45,7 +45,6 @@ func GetTodaysHukamnama(url string) hukam {
 	})
 	c.OnHTML("body > table:nth-child(3) > tbody > tr:nth-child(1) > td:nth-child(6) > blockquote > center:nth-child(4) > table > tbody > tr:nth-child(3) > td > p > font > strong > font:nth-child(2) > strong > font > font", func(e *colly.HTMLElement) {
 		gurmukhi := strings.TrimSpace(e.Text)
-
 		result.gurmukhi = gurmukhi
 	})
 
@@ -66,7 +65,6 @@ func GetTodaysHukamnama(url string) hukam {
 		dateTime, err := time.Parse(parseFormat, dateString)
 		if err != nil {
 			log.Fatalln("Couldn't parse date", err)
-			result.dateTime = ""
 		}
 		outputFormat := "2006-01-02 15:04"
 		result.dateTime = dateTime.Format(outputFormat)
@@ -75,10 +73,16 @@ func GetTodaysHukamnama(url string) hukam {
 	c.Visit(url)
 
 	// Display collector's statistics
-	log.Println(c)
+	// log.Println(c)
 
 	if result.gurmukhi == "" {
-		log.Fatalln("Couldn't get Gurmukhi using tr:nth-child(3)", result.gurmukhi)
+		log.Fatalln("Couldn't get Gurmukhi)", result.gurmukhi)
+	}
+	if result.dateTime == "" {
+		log.Fatalln("Couldn't get ang)", result.ang)
+	}
+	if result.dateTime == "" {
+		log.Fatalln("Couldn't get date)", result.dateTime)
 	}
 
 	//c.Wait()
