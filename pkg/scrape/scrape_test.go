@@ -2,17 +2,8 @@ package scrape
 
 import (
 	"fmt"
-	"log"
-	"net/http"
 	"testing"
 )
-
-func setupWebServer() {
-	fmt.Printf("Starting server at port 8081\n")
-	http.Handle("/", http.FileServer(http.Dir("./")))
-
-	log.Fatal(http.ListenAndServe(":8081", nil))
-}
 
 type testCase struct {
 	filename string
